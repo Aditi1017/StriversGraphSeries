@@ -1,81 +1,70 @@
+/***
+Input :
+
+4 4
+0 2
+2 3
+0 3
+1 3
+
+Output: No
+
+***/
+
 #include <bits/stdc++.h>
+#include<iostream>
 using namespace std;
 
-bool bipartiteBfs(int src, vector<int> adj[], int color[]) {
+bool isBipartiteBfs(int i, vector<int>adj[], int color[]){
     queue<int>q;
-    q.push(src); 
-    color[src] = 1; 
-    while(!q.empty()) {
-        int node = q.front(); 
+    q.push(i);
+    color[i] = 1;
+    while(!q.empty()){
+        int node = q.front();
         q.pop();
-        
-        for(auto it : adj[node]) {
-            if(color[it] == -1) {
-                color[it] = 1 - color[node]; 
-                q.push(it); 
-            } else if(color[it] == color[node]) {
-                return false; 
+        for(auto it: adj[node]){
+            if(color[it]==-1)
+            {
+                color[it] = 1-color[node];
+                q.push(it);
             }
+            else if(color[node] == color[it])
+            return false;
         }
     }
-    return true; 
+    return true;
 }
-bool checkBipartite(vector<int> adj[], int n) {
+
+bool CheckBipartite(vector<int>adj[], int n){
     int color[n];
-    memset(color, -1, sizeof color); 
-    for(int i = 0;i<n;i++) {
-        if(color[i] == -1) {
-            if(!bipartiteBfs(i, adj, color)) {
+    memset(color, -1, sizeof(color));
+    for(int i=0; i<n; i++){                    // components of graph
+        if(color[i]==-1){
+            if(!isBipartiteBfs(i,adj, color))  // this ! is to check if even a component is not BP then immediately return false dont check for other components
                 return false;
-            }
         }
     }
-    return true; 
+    return true;
 }
+
 int main() {
-	int n, m;
-	cin >> n >> m;
-	vector<int> adj[n];
-	for(int i = 0;i<m;i++) {
-	    int u, v;
-	    cin >> u >> v;
-	    adj[u].push_back(v); 
-	    adj[v].push_back(u); 
+	int V , e;
+	cin >> V  >> e;
+	vector<int> adj[V]; //vector of array to store edges
+
+	for(int i = 0 ; i<e ; i++){
+	    int u,v;
+	    cin >> u >>v;
+	    
+	    adj[u].push_back(v);
+	    adj[v].push_back(u);
 	}
+
+       if(CheckBipartite(adj, V))
+       cout << "Yes";
+       
+       else 
+       cout << "No";
 	
-	if(checkBipartite(adj, n)) {
-	    cout << "yes"; 
-	} else {
-	    cout << "No"; 
-	}
 	return 0;
 }
-
-/*
-8 7 
-0 1 
-1 2 
-2 3 
-3 4 
-4 6 
-6 7 
-1 7
-4 5 
-
-// bipartite graph example 
-*/ 
-
-/*
-7 7 
-0 1 
-1 2 
-2 3 
-3 4 
-4 6 
-6 1
-4 5 
-// not bipartite example
-*/
-
-
-
